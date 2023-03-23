@@ -26,7 +26,7 @@ async function processData() {
 
         const { firstName, email } = data;
 
-        const emailData = { name: firstName, signature: 'Larry Corp', designation: 'Manager' };
+        const emailData = { name: firstName };
 
         const html = mustache.render(template, emailData);
 
@@ -34,11 +34,11 @@ async function processData() {
         var client = new postmark.ServerClient("a15d1b45-97da-4087-8ded-da11ec0311de");
 
 
-        const from = "louis@sales.leadinglyapp.com";
+        const from = "marvin@nftbrands-inc.com";
 
         const to = email;
 
-        const subject = "Get started with SaaS";
+        const subject = "🗓IT'S LAUNCH DAY! 🔥🎉 Score a FREE HOODIE and a CHANCE TO WIN A TESLA 🚘";
 
         const message = {
             "From": from,
@@ -64,10 +64,44 @@ async function processData() {
   })
 }
 
+
+async function processData2() {
+  
+  var client = new postmark.ServerClient("a15d1b45-97da-4087-8ded-da11ec0311de");
+
+  const template = fs.readFileSync('./templates/template.html', 'utf8');
+
+  const from = "info@consultwithshiv.com";
+  const to = "daksht780@gmail.com";
+  const subject = "Get started with SaaS";
+
+
+  const data = { name: 'Shivanshu' };
+  const html = mustache.render(template, data);
+
+  const message = {
+      "From": from,
+      "To": to,
+      "Subject": subject,
+      "HtmlBody": html,
+      "MessageStream": "outbound"
+  };
+
+  client.sendEmail(message, function(error, result) {
+    if (error) {
+      console.error("Unable to send email: ", error.message);
+    } else {
+      console.log("Email sent successfully!");
+    }
+  });
+}
+
 async function main() {
   const results = await processData();
   console.log(results);
 }
 
 main();
+
+// processData2();
 
