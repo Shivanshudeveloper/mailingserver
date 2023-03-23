@@ -71,9 +71,9 @@ async function processData2() {
 
   const template = fs.readFileSync('./templates/template.html', 'utf8');
 
-  const from = "info@consultwithshiv.com";
+  const from = "marvin@nftbrands-inc.com";
   const to = "daksht780@gmail.com";
-  const subject = "Get started with SaaS";
+  const subject = "🗓IT'S LAUNCH DAY! 🔥🎉 Score a FREE HOODIE and a CHANCE TO WIN A TESLA 🚘";
 
 
   const data = { name: 'Shivanshu' };
