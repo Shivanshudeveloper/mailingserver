@@ -88,7 +88,7 @@ async function processData() {
             if (error) {
               console.error("Unable to send email: ", error.message);
             } else {
-              console.log("Email sent successfully!", email, statusEmail[1]);
+              console.log("Email sent successfully!", email, statusEmail[1], serverKey);
             }
           });
           await delay(5000); // pause for 1 second
