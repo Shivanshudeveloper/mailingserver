@@ -36,7 +36,7 @@ async function verifyEmail(emailVerify) {
       //  console.log('Email address: ', body.data.email_address);
       //  console.log('Status: ', body.data.status);
       // return body.data.email_address;
-        var temp = ["email", body.data.status]
+        var temp = ["email", body?.data?.status]
         resolve(temp);
      });
   })
@@ -56,42 +56,44 @@ async function processData() {
 
         const statusEmail = await verifyEmail(email);
 
-        if (statusEmail[1] === "valid") {
-          if (count === servers.length) {
-            count = 0;
-          }
-          var serverKey = servers[count];
-          count = count + 1;
-
-          const emailData = { name: firstName };
-
-          const html = mustache.render(template, emailData);
-
-          // Send an email:
-          var client = new postmark.ServerClient(serverKey);
-
-          const from = "david@nft.nftbrands-inc.com";
-
-          const to = email;
-
-          const subject = "🗓IT'S LAUNCH DAY! 🔥🎉 Score a FREE HOODIE and a CHANCE TO WIN A TESLA 🚘";
-
-          const message = {
-              "From": from,
-              "To": to,
-              "Subject": subject,
-              "HtmlBody": html,
-              "MessageStream": "outbound"
-          };
-
-          client.sendEmail(message, function(error, result) {
-            if (error) {
-              console.error("Unable to send email: ", error.message);
-            } else {
-              console.log("Email sent successfully!", email, statusEmail[1], serverKey);
+        if (statusEmail[1]) {
+          if (statusEmail[1] === "valid") {
+            if (count === servers.length) {
+              count = 0;
             }
-          });
-          await delay(5000); // pause for 1 second
+            var serverKey = servers[count];
+            count = count + 1;
+  
+            const emailData = { name: firstName };
+  
+            const html = mustache.render(template, emailData);
+  
+            // Send an email:
+            var client = new postmark.ServerClient(serverKey);
+  
+            const from = "david@nft.nftbrands-inc.com";
+  
+            const to = email;
+  
+            const subject = "🗓IT'S LAUNCH DAY! 🔥🎉 Score a FREE HOODIE and a CHANCE TO WIN A TESLA 🚘";
+  
+            const message = {
+                "From": from,
+                "To": to,
+                "Subject": subject,
+                "HtmlBody": html,
+                "MessageStream": "outbound"
+            };
+  
+            client.sendEmail(message, function(error, result) {
+              if (error) {
+                console.error("Unable to send email: ", error.message);
+              } else {
+                console.log("Email sent successfully!", email, statusEmail[1], serverKey);
+              }
+            });
+            await delay(5000); // pause for 1 second
+          }
         }
       })
       .on('end', () => {
