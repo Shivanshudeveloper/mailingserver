@@ -70,7 +70,7 @@ async function processData() {
           // Send an email:
           var client = new postmark.ServerClient(serverKey);
 
-          const from = "josh@nftbrands-inc.com";
+          const from = "david@nft.nftbrands-inc.com";
 
           const to = email;
 
