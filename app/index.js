@@ -53,6 +53,7 @@ async function processData() {
         const template = fs.readFileSync('./templates/template1.html', 'utf8');
 
         const { firstName, email } = data;
+        console.log("In Process", email);
 
         const statusEmail = await verifyEmail(email);
 
