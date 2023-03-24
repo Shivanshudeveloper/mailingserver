@@ -50,12 +50,6 @@ async function processData() {
     fs.createReadStream('main.csv')
       .pipe(csv())
       .on('data', async (data) => {
-        if (count === servers.length) {
-          count = 0;
-        }
-        var serverKey = servers[count];
-        count = count + 1;
-
         const template = fs.readFileSync('./templates/template.html', 'utf8');
 
         const { firstName, email } = data;
@@ -63,6 +57,12 @@ async function processData() {
         const statusEmail = await verifyEmail(email);
 
         if (statusEmail[1] === "valid") {
+          if (count === servers.length) {
+            count = 0;
+          }
+          var serverKey = servers[count];
+          count = count + 1;
+
           const emailData = { name: firstName };
 
           const html = mustache.render(template, emailData);
