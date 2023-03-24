@@ -3,8 +3,9 @@ var postmark = require("postmark");
 const mustache = require('mustache');
 const csv = require('csv-parser');
 const fs = require('fs');
+const request = require("request");
 
-const servers = ["91544462-f272-4b57-b119-84eeffd31530", "eacbc1f9-3eed-445d-837a-56fd3ffb5e56", "f6a9551c-2a98-440c-bbb2-da5498d4058f", "f90885e1-4839-4c9c-be23-d72ee170e0cf", "bbdf4a86-13e8-44d2-af27-1d74274e8608", "fbfe19e0-75df-4a74-8df6-154dcb8e3594", "599b697b-02b2-48f5-8b84-e0465e19ac32", "ecacd9d4-1df0-4b06-8fb0-0d3deecbcffc", "158c7988-c349-46fd-80f0-58652530b834", "7ae69de2-4855-4e75-8e4f-1f4ac929274f", "efb80930-1c79-427b-8999-f71c90f29427"];
+const servers = ["91544462-f272-4b57-b119-84eeffd31530", "eacbc1f9-3eed-445d-837a-56fd3ffb5e56", "f6a9551c-2a98-440c-bbb2-da5498d4058f", "f90885e1-4839-4c9c-be23-d72ee170e0cf", "bbdf4a86-13e8-44d2-af27-1d74274e8608", "fbfe19e0-75df-4a74-8df6-154dcb8e3594", "599b697b-02b2-48f5-8b84-e0465e19ac32", "ecacd9d4-1df0-4b06-8fb0-0d3deecbcffc", "158c7988-c349-46fd-80f0-58652530b834", "7ae69de2-4855-4e75-8e4f-1f4ac929274f", "efb80930-1c79-427b-8999-f71c90f29427", "81b2ed32-8256-4106-8e92-9d5da67e86e7", "c323a51d-5c44-44d6-80a5-9e8eb26f4bcb", "481c5496-e81c-4d76-8314-5062add9d189", "f2e571cd-248d-4381-98b7-1bdb808b4049", "39185e1d-a87c-40c2-bc39-23f5b1010af4", "7ab232d4-f4c9-4393-9ff6-51c9e964019b", "4c9da566-7673-4fff-92b2-58f257709408", "de334d3e-b1a4-4abc-a3ca-65394f1e355c"];
 
 
 function delay(ms) {
@@ -13,6 +14,32 @@ function delay(ms) {
       resolve();
     }, ms);
   });
+}
+
+async function verifyEmail(emailVerify) {
+  return new Promise((resolve) => {
+    var options = {
+      method: 'POST',
+      url: 'https://api.clearout.io/v2/email_verify/instant',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': '94e277148db2a5e2e6ab39647ec64cbd:4a27f77f1679c5cd2f0e6c998fed9d79f4831b9401283a37a8dd2943f41cc626',
+      },
+      body: {
+       email: emailVerify
+      },
+      json: true
+     };
+     
+     request(options, function (err, response, body) {
+       if (err) throw new Error(err);
+      //  console.log('Email address: ', body.data.email_address);
+      //  console.log('Status: ', body.data.status);
+      // return body.data.email_address;
+        var temp = [body.data.email_address, body.data.status]
+        resolve(temp);
+     });
+  })
 }
 
 
@@ -33,36 +60,39 @@ async function processData() {
 
         const { firstName, email } = data;
 
-        const emailData = { name: firstName };
+        const statusEmail = await verifyEmail(email);
 
-        const html = mustache.render(template, emailData);
+        if (statusEmail[1] === "valid") {
+          const emailData = { name: firstName };
 
-        // Send an email:
-        var client = new postmark.ServerClient(serverKey);
+          const html = mustache.render(template, emailData);
 
+          // Send an email:
+          var client = new postmark.ServerClient(serverKey);
 
-        const from = "josh@nftbrands-inc.com";
+          const from = "josh@nftbrands-inc.com";
 
-        const to = email;
+          const to = email;
 
-        const subject = "🗓IT'S LAUNCH DAY! 🔥🎉 Score a FREE HOODIE and a CHANCE TO WIN A TESLA 🚘";
+          const subject = "🗓IT'S LAUNCH DAY! 🔥🎉 Score a FREE HOODIE and a CHANCE TO WIN A TESLA 🚘";
 
-        const message = {
-            "From": from,
-            "To": to,
-            "Subject": subject,
-            "HtmlBody": html,
-            "MessageStream": "outbound"
-        };
+          const message = {
+              "From": from,
+              "To": to,
+              "Subject": subject,
+              "HtmlBody": html,
+              "MessageStream": "outbound"
+          };
 
-        client.sendEmail(message, function(error, result) {
-          if (error) {
-            console.error("Unable to send email: ", error.message);
-          } else {
-            console.log("Email sent successfully!", email);
-          }
-        });
-        await delay(5000); // pause for 1 second
+          client.sendEmail(message, function(error, result) {
+            if (error) {
+              console.error("Unable to send email: ", error.message);
+            } else {
+              console.log("Email sent successfully!", email, statusEmail[1]);
+            }
+          });
+          await delay(5000); // pause for 1 second
+        }
       })
       .on('end', () => {
         // console.log("Done");
@@ -108,7 +138,13 @@ async function main() {
   console.log(results);
 }
 
+async function validateEmail(email) {
+  const statusEmail = await verifyEmail(email);
+  console.log(statusEmail);
+}
+
 main();
+
 
 // processData2();
 
