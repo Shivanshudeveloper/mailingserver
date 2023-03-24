@@ -47,10 +47,10 @@ async function verifyEmail(emailVerify) {
 async function processData() {
   var count = 0;
   return new Promise((resolve) => {
-    fs.createReadStream('main.csv')
+    fs.createReadStream('output_1.csv')
       .pipe(csv())
       .on('data', async (data) => {
-        const template = fs.readFileSync('./templates/template.html', 'utf8');
+        const template = fs.readFileSync('./templates/template1.html', 'utf8');
 
         const { firstName, email } = data;
 
