@@ -36,7 +36,7 @@ async function verifyEmail(emailVerify) {
       //  console.log('Email address: ', body.data.email_address);
       //  console.log('Status: ', body.data.status);
       // return body.data.email_address;
-        var temp = [body.data.email_address, body.data.status]
+        var temp = ["email", body.data.status]
         resolve(temp);
      });
   })
