@@ -5,7 +5,8 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const request = require("request");
 
-const servers = ["1437341d-03df-425e-83a1-6913276f0289","40040c8f-b160-44be-b299-2c5687644790","b398079a-423c-400b-8ccf-755e39321385","2701fcae-65b5-49ca-8735-45d64d8467aa","871fb12e-93f8-4496-91ad-1f607e9b0f4f","91544462-f272-4b57-b119-84eeffd31530", "eacbc1f9-3eed-445d-837a-56fd3ffb5e56", "f6a9551c-2a98-440c-bbb2-da5498d4058f", "f90885e1-4839-4c9c-be23-d72ee170e0cf", "bbdf4a86-13e8-44d2-af27-1d74274e8608", "fbfe19e0-75df-4a74-8df6-154dcb8e3594", "599b697b-02b2-48f5-8b84-e0465e19ac32", "ecacd9d4-1df0-4b06-8fb0-0d3deecbcffc", "158c7988-c349-46fd-80f0-58652530b834", "7ae69de2-4855-4e75-8e4f-1f4ac929274f", "efb80930-1c79-427b-8999-f71c90f29427", "81b2ed32-8256-4106-8e92-9d5da67e86e7", "c323a51d-5c44-44d6-80a5-9e8eb26f4bcb", "481c5496-e81c-4d76-8314-5062add9d189", "f2e571cd-248d-4381-98b7-1bdb808b4049", "39185e1d-a87c-40c2-bc39-23f5b1010af4", "7ab232d4-f4c9-4393-9ff6-51c9e964019b", "4c9da566-7673-4fff-92b2-58f257709408", "41f3db5e-1fae-4957-9f60-34bb13023d7a", "95a4e140-3abc-48af-9409-961607e4bd48", "d294992b-0cb3-4bd9-97c9-40f80d846507", "31bdb8e4-0185-4e04-ab04-c7b1c0c4a888", "313905bc-52e3-49fc-8dee-3ae55640e732", "8903a631-a2a8-402e-a0cf-9267cb36705d", "b8583fdf-e074-47c3-8445-2fe4d9b03a95"];
+// const servers = ["1437341d-03df-425e-83a1-6913276f0289","40040c8f-b160-44be-b299-2c5687644790","b398079a-423c-400b-8ccf-755e39321385","2701fcae-65b5-49ca-8735-45d64d8467aa","871fb12e-93f8-4496-91ad-1f607e9b0f4f","91544462-f272-4b57-b119-84eeffd31530", "eacbc1f9-3eed-445d-837a-56fd3ffb5e56", "f6a9551c-2a98-440c-bbb2-da5498d4058f", "f90885e1-4839-4c9c-be23-d72ee170e0cf", "bbdf4a86-13e8-44d2-af27-1d74274e8608", "fbfe19e0-75df-4a74-8df6-154dcb8e3594", "599b697b-02b2-48f5-8b84-e0465e19ac32", "ecacd9d4-1df0-4b06-8fb0-0d3deecbcffc", "158c7988-c349-46fd-80f0-58652530b834", "7ae69de2-4855-4e75-8e4f-1f4ac929274f", "efb80930-1c79-427b-8999-f71c90f29427", "81b2ed32-8256-4106-8e92-9d5da67e86e7", "c323a51d-5c44-44d6-80a5-9e8eb26f4bcb", "481c5496-e81c-4d76-8314-5062add9d189", "f2e571cd-248d-4381-98b7-1bdb808b4049", "39185e1d-a87c-40c2-bc39-23f5b1010af4", "7ab232d4-f4c9-4393-9ff6-51c9e964019b", "4c9da566-7673-4fff-92b2-58f257709408", "41f3db5e-1fae-4957-9f60-34bb13023d7a", "95a4e140-3abc-48af-9409-961607e4bd48", "d294992b-0cb3-4bd9-97c9-40f80d846507", "31bdb8e4-0185-4e04-ab04-c7b1c0c4a888", "313905bc-52e3-49fc-8dee-3ae55640e732", "8903a631-a2a8-402e-a0cf-9267cb36705d", "b8583fdf-e074-47c3-8445-2fe4d9b03a95"];
+const servers = ["5a9f3467-17c9-4f70-81bb-db0db22ff731"];
 
 
 function delay(ms) {
@@ -37,7 +38,7 @@ async function verifyEmail(emailVerify) {
       //  console.log('Status: ', body.data.status);
       // return body.data.email_address;
         if (body.data.status) {
-          var temp = ["email", body.data.status]
+          var temp = ["email", body.data?.status]
           resolve(temp);  
         } else {
           resolve(null);
@@ -51,7 +52,7 @@ async function verifyEmail(emailVerify) {
 async function processData() {
   var count = 0;
   return new Promise((resolve) => {
-    fs.createReadStream('output_1.csv')
+    fs.createReadStream('main.csv')
       .pipe(csv())
       .on('data', async (data) => {
         const template = fs.readFileSync('./templates/template1.html', 'utf8');
